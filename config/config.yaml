@@ -89,7 +89,7 @@ platforms:
 # max_age_days: 可选，覆盖全局 freshness_filter.max_age_days
 # ===============================================================
 rss:
-  enabled: true                       # 是否启用 RSS 抓取
+  enabled: false                      # 是否启用 RSS 抓取（本项目只关注国内热榜，关闭 RSS）
 
   # 文章新鲜度过滤配置（全局默认值）
   # 过滤掉发布时间超过指定天数的旧文章，避免同一篇文章重复出现在推送中
@@ -178,7 +178,7 @@ report:
 # 5) 这里决定“筛选路径”，不决定 AI 模型（模型在 ai 段）
 # ===============================================================
 filter:
-  method: "ai"                     # 可选: keyword | ai
+  method: "keyword"                 # 可选: keyword | ai（当前用关键词词组，见 frequency_words.txt）
 
   # AI 模式标签排序开关（仅 ai 模式生效）
   # true: 按标签优先级排序（来自兴趣描述提取顺序）
@@ -261,15 +261,15 @@ display:
   # 控制各区域是否启用（配合 region_order 使用）
   regions:
     hotlist: true                     # 热榜区域（关键词匹配 / AI 智能筛选）
-    new_items: false                   # 新增热点区域（含热榜新增 + RSS 新增）
+    new_items: true                   # 新增热点区域（含热榜新增 + RSS 新增）
                                       # 注：热点词汇统计中的新增标记🆕不受此配置影响
 
-    rss: true                         # RSS 订阅区域
+    rss: false                        # RSS 订阅区域（本项目暂不使用 RSS）
                                       # 开启后将对 RSS 进行关键词分析并在通知中展示
                                       # 关闭后跳过分析，但独立展示区不受影响
 
-    standalone: false                 # 独立展示区（完整热榜/RSS，不受关键词过滤）
-    ai_analysis: true                 # AI 分析区域
+    standalone: false                 # 独立展示区（用户要求关闭）
+    ai_analysis: false                # AI 分析区域（AI API Key 未配置前先关闭，填 key 后再开）
 
   # 📋 独立展示区配置
   # 用途：将指定平台的完整热榜/RSS 数据独立提取，不受关键词过滤影响
@@ -322,8 +322,8 @@ notification:
       webhook_url: ""                 # 钉钉机器人 webhook URL
 
     wework:
-      webhook_url: ""                 # 企业微信机器人 webhook URL
-      msg_type: "markdown"            # 消息类型：markdown(群机器人) | text(个人微信应用)
+      webhook_url: ""                 # ⚠️ 此处留空，真实 URL 填在 GitHub Secrets: WEWORK_WEBHOOK_URL
+      msg_type: "markdown"            # 群机器人用 markdown
 
     telegram:
       bot_token: ""                   # Telegram Bot Token
@@ -468,7 +468,7 @@ ai:
 # 模型配置见上方 ai 配置段
 # ===============================================================
 ai_analysis:
-  enabled: true                     # 是否启用 AI 分析（总开关）
+  enabled: false                    # 未配置 AI API Key 前先关闭；填好 key 后改为 true 即可启用
                                     # ⚠️ 开启调度系统后，此项仍为总开关：
                                     #   false → 永远不分析（无论调度怎么设置）
                                     #   true  → 由调度的 analyze 字段控制何时分析
@@ -527,7 +527,7 @@ ai_analysis:
 # 模型配置见上方 ai 配置段
 # ===============================================================
 ai_translation:
-  enabled: true                    # 是否启用翻译功能
+  enabled: false                   # 未配置 AI API Key 前先关闭；只关注中文热榜，多数情况可保持关闭
 
   # 翻译目标语言
   # 格式：自然语言描述
