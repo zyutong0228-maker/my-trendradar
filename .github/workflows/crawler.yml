@@ -41,7 +41,7 @@ on:
     #
     # 注意：GitHub Actions 的 cron 有随机延迟（通常几分钟到十几分钟），
     #       所以实际触发可能比整点稍晚，属于正常现象。
-    - cron: "0 0 * * *"
+    - cron: "0 5 * * *"
     - cron: "0 12 * * *"
 
   workflow_dispatch:
