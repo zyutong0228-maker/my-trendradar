@@ -1015,16 +1015,54 @@ class NewsAnalyzer:
             and has_notification
             and not has_any_content
         ):
+            # ★ 心跳推送：即便没有匹配到内容，也发一条"系统运行中"的简短提醒
+            #   避免用户以为工具挂了；同时让自己知道"今天真的没命中"。
             mode_strategy = self._get_mode_strategy()
             if self.report_mode == "incremental":
-                if not has_rss_content:
-                    print("跳过通知：增量模式下未检测到匹配的新闻和RSS")
-                else:
-                    print("跳过通知：增量模式下新闻未匹配到关键词")
+                print("[心跳] 增量模式未命中关键词，但发送心跳通知让用户知道系统运行中")
             else:
-                print(
-                    f"跳过通知：{mode_strategy['mode_name']}下未检测到匹配的新闻"
-                )
+                print(f"[心跳] {mode_strategy['mode_name']}未命中关键词，但发送心跳通知让用户知道系统运行中")
+
+            # 调度系统决策（维持和正常推送一致）
+            if not schedule.push:
+                print("[心跳] 调度器: 当前时间段不执行推送")
+                return False
+
+            if schedule.once_push and schedule.period_key:
+                scheduler = self.ctx.create_scheduler()
+                date_str = self.ctx.format_date()
+                if scheduler.already_executed(schedule.period_key, "push", date_str):
+                    print(f"[心跳] 调度器: 时间段 {schedule.period_name or schedule.period_key} 今天已推送过，跳过")
+                    return False
+
+            # 构造空的 report_data（stats/new_titles/failed_ids 都为空）
+            # splitter 会自动渲染成 "📭 暂无匹配的热点词汇" 并发送
+            report_data = self.ctx.prepare_report(stats, failed_ids, new_titles, id_to_name, mode, frequency_file=self.frequency_file)
+            update_info_to_send = self.update_info if cfg["SHOW_VERSION_UPDATE"] else None
+
+            dispatcher = self.ctx.create_notification_dispatcher()
+            results = dispatcher.dispatch_all(
+                report_data=report_data,
+                report_type=report_type,
+                update_info=update_info_to_send,
+                proxy_url=self.proxy_url,
+                mode=mode,
+                html_file_path=html_file_path,
+                rss_items=None,
+                rss_new_items=None,
+                ai_analysis=None,
+                standalone_data=None,
+                skip_translation=True,
+            )
+
+            # 记录推送成功
+            if results and any(results.values()):
+                if schedule.once_push and schedule.period_key:
+                    scheduler = self.ctx.create_scheduler()
+                    date_str = self.ctx.format_date()
+                    scheduler.record_execution(schedule.period_key, "push", date_str)
+
+            return True
 
         return False
 
