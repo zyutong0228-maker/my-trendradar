@@ -1,0 +1,30 @@
+name: Check In
+
+# ✅ 签到续期：运行此 workflow 可重置 30 天计时，保持 "Get Hot News" 正常运行
+# ✅ Renewal: Run this workflow to reset the 30-day timer and keep "Get Hot News" active
+#
+# 📌 操作方法 / How to use:
+#   1. 每月 1 号自动签到（北京时间 08:00）
+#   2. 也可随时点 "Run workflow" 手动触发
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"  # 每月1号 UTC 00:00 = 北京时间 08:00 自动签到
+  workflow_dispatch:
+
+jobs:
+  del_runs:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Delete all workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
+          delete_workflow_by_state_pattern: "ALL"
+          delete_run_by_conclusion_pattern: "ALL"
