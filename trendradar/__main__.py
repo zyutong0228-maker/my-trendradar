@@ -201,9 +201,9 @@ class NewsAnalyzer:
             "should_send_notification": True,
         },
         "current": {
-            "mode_name": "当前榜单模式",
-            "description": "当前榜单模式（当前榜单匹配新闻 + 新增新闻区域 + 按时推送）",
-            "report_type": "当前榜单",
+            "mode_name": "本地热榜模式",
+            "description": "本地热榜模式（当前榜单匹配新闻 + 新增新闻区域 + 按时推送）",
+            "report_type": "本地热榜",
             "should_send_notification": True,
         },
         "daily": {

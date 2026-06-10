@@ -243,36 +243,36 @@ def split_content_into_batches(
         elif format_type == "telegram":
             ai_stats_line = f"AI 分析数： {news_display}{mode_suffix}\n"
 
-    # 构建统一的头部（总是显示总新闻数、时间和类型）
+    # 构建统一的头部（总是显示今日热点数、时间和类型）
     if format_type in ("wework", "bark"):
-        base_header = f"**总新闻数：** {total_titles}\n"
+        base_header = f"**今日热点数：** {total_titles}\n"
         base_header += ai_stats_line
         base_header += f"**时间：** {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
         base_header += f"**类型：** {report_type}\n\n"
     elif format_type == "telegram":
-        base_header = f"总新闻数： {total_titles}\n"
+        base_header = f"今日热点数： {total_titles}\n"
         base_header += ai_stats_line
         base_header += f"时间： {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
         base_header += f"类型： {report_type}\n\n"
     elif format_type == "ntfy":
-        base_header = f"**总新闻数：** {total_titles}\n"
+        base_header = f"**今日热点数：** {total_titles}\n"
         base_header += ai_stats_line
         base_header += f"**时间：** {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
         base_header += f"**类型：** {report_type}\n\n"
     elif format_type == "feishu":
-        base_header = f"**总新闻数：** {total_titles}\n"
+        base_header = f"**今日热点数：** {total_titles}\n"
         base_header += ai_stats_line
         base_header += f"**时间：** {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
         base_header += f"**类型：** {report_type}\n\n"
         base_header += "---\n\n"
     elif format_type == "dingtalk":
-        base_header = f"**总新闻数：** {total_titles}\n"
+        base_header = f"**今日热点数：** {total_titles}\n"
         base_header += ai_stats_line
         base_header += f"**时间：** {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
         base_header += f"**类型：** {report_type}\n\n"
         base_header += "---\n\n"
     elif format_type == "slack":
-        base_header = f"*总新闻数：* {total_titles}\n"
+        base_header = f"*今日热点数：* {total_titles}\n"
         base_header += ai_stats_line
         base_header += f"*时间：* {now.strftime('%Y-%m-%d %H:%M:%S')}\n"
         base_header += f"*类型：* {report_type}\n\n"
@@ -280,31 +280,19 @@ def split_content_into_batches(
     base_footer = ""
     if format_type in ("wework", "bark"):
         base_footer = f"\n\n\n> 更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}"
-        if update_info:
-            base_footer += f"\n> TrendRadar 发现新版本 **{update_info['remote_version']}**，当前 **{update_info['current_version']}**"
     elif format_type == "telegram":
         base_footer = f"\n\n更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}"
-        if update_info:
-            base_footer += f"\nTrendRadar 发现新版本 {update_info['remote_version']}，当前 {update_info['current_version']}"
     elif format_type == "ntfy":
         base_footer = f"\n\n> 更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}"
-        if update_info:
-            base_footer += f"\n> TrendRadar 发现新版本 **{update_info['remote_version']}**，当前 **{update_info['current_version']}**"
     elif format_type == "feishu":
         base_footer = f"\n\n<font color='grey'>更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}</font>"
-        if update_info:
-            base_footer += f"\n<font color='grey'>TrendRadar 发现新版本 {update_info['remote_version']}，当前 {update_info['current_version']}</font>"
     elif format_type == "dingtalk":
         base_footer = f"\n\n> 更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}"
-        if update_info:
-            base_footer += f"\n> TrendRadar 发现新版本 **{update_info['remote_version']}**，当前 **{update_info['current_version']}**"
     elif format_type == "slack":
         base_footer = f"\n\n_更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}_"
-        if update_info:
-            base_footer += f"\n_TrendRadar 发现新版本 *{update_info['remote_version']}*，当前 *{update_info['current_version']}_"
 
     # 根据 display_mode 选择统计标题
-    stats_title = "热点词汇统计" if display_mode == "keyword" else "热点新闻统计"
+    stats_title = "热点速览" if display_mode == "keyword" else "热点新闻"
     stats_header = ""
     if report_data["stats"]:
         if format_type in ("wework", "bark"):
@@ -334,11 +322,11 @@ def split_content_into_batches(
         and not standalone_data  # 有独立展示区数据时也不返回
     ):
         if mode == "incremental":
-            mode_text = "增量模式下暂无新增匹配的热点词汇"
+            mode_text = "暂无新增热点"
         elif mode == "current":
-            mode_text = "当前榜单模式下暂无匹配的热点词汇"
+            mode_text = "今日暂无匹配热点"
         else:
-            mode_text = "暂无匹配的热点词汇"
+            mode_text = "暂无匹配热点"
         simple_content = f"📭 {mode_text}\n\n"
         final_content = base_header + simple_content + base_footer
         batches.append(final_content)

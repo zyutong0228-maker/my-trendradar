@@ -46,7 +46,7 @@ def render_feishu_content(
     # 生成热点词汇统计部分
     stats_content = ""
     if report_data["stats"]:
-        stats_content += "📊 **热点词汇统计**\n\n"
+        stats_content += "📊 **热点速览**\n\n"
 
         total_count = len(report_data["stats"])
 
@@ -120,11 +120,11 @@ def render_feishu_content(
 
     if not text_content:
         if mode == "incremental":
-            mode_text = "增量模式下暂无新增匹配的热点词汇"
+            mode_text = "暂无新增热点"
         elif mode == "current":
-            mode_text = "当前榜单模式下暂无匹配的热点词汇"
+            mode_text = "今日暂无匹配热点"
         else:
-            mode_text = "暂无匹配的热点词汇"
+            mode_text = "暂无匹配热点"
         text_content = f"📭 {mode_text}\n\n"
 
     if report_data["failed_ids"]:
@@ -141,8 +141,6 @@ def render_feishu_content(
         f"\n\n<font color='grey'>更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}</font>"
     )
 
-    if update_info:
-        text_content += f"\n<font color='grey'>TrendRadar 发现新版本 {update_info['remote_version']}，当前 {update_info['current_version']}</font>"
 
     return text_content
 
@@ -187,7 +185,7 @@ def render_dingtalk_content(
     # 生成热点词汇统计部分
     stats_content = ""
     if report_data["stats"]:
-        stats_content += "📊 **热点词汇统计**\n\n"
+        stats_content += "📊 **热点速览**\n\n"
 
         total_count = len(report_data["stats"])
 
@@ -261,11 +259,11 @@ def render_dingtalk_content(
 
     if not has_content:
         if mode == "incremental":
-            mode_text = "增量模式下暂无新增匹配的热点词汇"
+            mode_text = "暂无新增热点"
         elif mode == "current":
-            mode_text = "当前榜单模式下暂无匹配的热点词汇"
+            mode_text = "今日暂无匹配热点"
         else:
-            mode_text = "暂无匹配的热点词汇"
+            mode_text = "暂无匹配热点"
         text_content += f"📭 {mode_text}\n\n"
 
     if report_data["failed_ids"]:
@@ -278,8 +276,6 @@ def render_dingtalk_content(
 
     text_content += f"\n\n> 更新时间：{now.strftime('%Y-%m-%d %H:%M:%S')}"
 
-    if update_info:
-        text_content += f"\n> TrendRadar 发现新版本 **{update_info['remote_version']}**，当前 **{update_info['current_version']}**"
 
     return text_content
 
